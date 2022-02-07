@@ -1,17 +1,17 @@
 import Foundation
 import Core
 
-public final class RoomListInteractor: RoomListUseCase, DependencyInjectable {
+public final class RoomListInteractor: RoomListInteractorContract, DependencyInjectable {
     public init() {}
     
     // MARK: - DependencyInjectable
     
     public struct Dependency {
-        public init(output: RoomListInteractorOutput? = nil) {
+        public init(output: RoomListInteractorOutputContract? = nil) {
             self.output = output
         }
         
-        public weak var output: RoomListInteractorOutput?
+        public weak var output: RoomListInteractorOutputContract?
     }
     
     public func inject(_ dependency: Dependency) {

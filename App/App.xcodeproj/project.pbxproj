@@ -12,7 +12,8 @@
 		148FD8F627AFB33A005AC898 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 148FD8F527AFB33A005AC898 /* Assets.xcassets */; };
 		148FD8F927AFB33A005AC898 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 148FD8F727AFB33A005AC898 /* LaunchScreen.storyboard */; };
 		148FD90227AFB387005AC898 /* Chat in Frameworks */ = {isa = PBXBuildFile; productRef = 148FD90127AFB387005AC898 /* Chat */; };
-		148FD90427AFBDD4005AC898 /* AppViewAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148FD90327AFBDD4005AC898 /* AppViewAssembler.swift */; };
+		148FD90427AFBDD4005AC898 /* AppSceneResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148FD90327AFBDD4005AC898 /* AppSceneResolver.swift */; };
+		148FD90627AFFACD005AC898 /* Core in Frameworks */ = {isa = PBXBuildFile; productRef = 148FD90527AFFACD005AC898 /* Core */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,7 +23,7 @@
 		148FD8F527AFB33A005AC898 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		148FD8F827AFB33A005AC898 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		148FD8FA27AFB33A005AC898 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		148FD90327AFBDD4005AC898 /* AppViewAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewAssembler.swift; sourceTree = "<group>"; };
+		148FD90327AFBDD4005AC898 /* AppSceneResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSceneResolver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +32,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				148FD90227AFB387005AC898 /* Chat in Frameworks */,
+				148FD90627AFFACD005AC898 /* Core in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +61,7 @@
 			children = (
 				148FD8EC27AFB339005AC898 /* AppDelegate.swift */,
 				148FD8EE27AFB339005AC898 /* SceneDelegate.swift */,
-				148FD90327AFBDD4005AC898 /* AppViewAssembler.swift */,
+				148FD90327AFBDD4005AC898 /* AppSceneResolver.swift */,
 				148FD8F527AFB33A005AC898 /* Assets.xcassets */,
 				148FD8F727AFB33A005AC898 /* LaunchScreen.storyboard */,
 				148FD8FA27AFB33A005AC898 /* Info.plist */,
@@ -92,6 +94,7 @@
 			name = App;
 			packageProductDependencies = (
 				148FD90127AFB387005AC898 /* Chat */,
+				148FD90527AFFACD005AC898 /* Core */,
 			);
 			productName = App;
 			productReference = 148FD8E927AFB339005AC898 /* App.app */;
@@ -149,7 +152,7 @@
 			files = (
 				148FD8ED27AFB339005AC898 /* AppDelegate.swift in Sources */,
 				148FD8EF27AFB339005AC898 /* SceneDelegate.swift in Sources */,
-				148FD90427AFBDD4005AC898 /* AppViewAssembler.swift in Sources */,
+				148FD90427AFBDD4005AC898 /* AppSceneResolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +365,10 @@
 		148FD90127AFB387005AC898 /* Chat */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Chat;
+		};
+		148FD90527AFFACD005AC898 /* Core */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Core;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

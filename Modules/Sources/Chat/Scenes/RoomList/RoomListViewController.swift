@@ -1,16 +1,16 @@
 import UIKit
 import Core
 
-public final class RoomListViewController: UIViewController, RoomListView, DependencyInjectable, UICollectionViewDelegate {
+public final class RoomListViewController: UIViewController, RoomListViewContract, DependencyInjectable, UICollectionViewDelegate {
     
     // MARK: - DependencyInjectable
 
     public struct Dependency {
-        public init(presentation: RoomListPresentation) {
-            self.presentation = presentation
+        public init(presenter: RoomListPresenterContract) {
+            self.presenter = presenter
         }
         
-        public let presentation: RoomListPresentation
+        public let presenter: RoomListPresenterContract
     }
     
     public func inject(_ dependency: Dependency) {
@@ -33,7 +33,7 @@ public final class RoomListViewController: UIViewController, RoomListView, Depen
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        dependency.presentation.didSelectRoom(roomId: rooms[indexPath.item].id)
+        dependency.presenter.didSelectRoom(roomId: rooms[indexPath.item].id)
     }
     
     // MARK: - Override
@@ -44,7 +44,7 @@ public final class RoomListViewController: UIViewController, RoomListView, Depen
         navigationItem.rightBarButtonItem = .init(
             systemItem: .add,
             primaryAction: .init(handler: { [weak self] _ in
-                self?.dependency.presentation.didTapCreateRoomButton()
+                self?.dependency.presenter.didTapCreateRoomButton()
             }),
             menu: nil)
 
@@ -58,31 +58,31 @@ public final class RoomListViewController: UIViewController, RoomListView, Depen
         ])
 
         updateRoomListView()
-        dependency.presentation.viewDidLoad()
+        dependency.presenter.viewDidLoad()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        dependency.presentation.viewWillAppear()
+        dependency.presenter.viewWillAppear()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        dependency.presentation.viewDidAppear()
+        dependency.presenter.viewDidAppear()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        dependency.presentation.viewWillDisappear()
+        dependency.presenter.viewWillDisappear()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        dependency.presentation.viewDidDisappear()
+        dependency.presenter.viewDidDisappear()
     }
     
     deinit {
-        dependency.presentation.viewDidDeinit()
+        dependency.presenter.viewDidDeinit()
     }
     
     // MARK: - Private
@@ -151,10 +151,10 @@ struct RoomListViewController_Wrapper: UIViewControllerRepresentable {
         let router = RoomListRouter()
         let interactor = RoomListInteractor()
         
-        viewController.inject(.init(presentation: presenter))
-        presenter.inject(.init(view: viewController, useCase: interactor, wireframe: router))
+        viewController.inject(.init(presenter: presenter))
+        presenter.inject(.init(view: viewController, interactor: interactor, router: router))
         interactor.inject(.init(output: presenter))
-        router.inject(.init(viewAssembler: DummyViewAssembler(), viewController: viewController))
+        router.inject(.init(sceneResolver: DummySceneResolver(), viewController: viewController))
         return UINavigationController(rootViewController: viewController)
     }
     

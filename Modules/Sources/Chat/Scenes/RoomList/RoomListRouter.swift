@@ -1,18 +1,18 @@
 import UIKit.UIViewController
 import Core
 
-public final class RoomListRouter: RoomListWireframe, DependencyInjectable {
+public final class RoomListRouter: RoomListRouterContract, DependencyInjectable {
     public init() {}
     
     // MARK: - DependencyInjectable
     
     public struct Dependency {
-        public init(viewAssembler: ViewAssembler, viewController: UIViewController) {
-            self.viewAssembler = viewAssembler
+        public init(sceneResolver: SceneResolver, viewController: UIViewController) {
+            self.sceneResolver = sceneResolver
             self.viewController = viewController
         }
         
-        public let viewAssembler: ViewAssembler
+        public let sceneResolver: SceneResolver
         public weak var viewController: UIViewController?
     }
     
@@ -23,12 +23,12 @@ public final class RoomListRouter: RoomListWireframe, DependencyInjectable {
     // MARK: - RoomListWireframe
     
     public func presentRoomView(roomId: Int) {
-        let viewController = dependency.viewAssembler.assembleChatView(.room(roomId: roomId))
+        let viewController = dependency.sceneResolver.resolve(.chatRoom(roomId: roomId))
         dependency.viewController?.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    public func presentCreateRoomView() {
-        let viewController = dependency.viewAssembler.assembleChatView(.createRoom)
+    public func presentRoomCreateView() {
+        let viewController = dependency.sceneResolver.resolve(.chatRoomCreate)
         let navigationController = UINavigationController(rootViewController: viewController)
         dependency.viewController?.present(navigationController, animated: true, completion: nil)
     }

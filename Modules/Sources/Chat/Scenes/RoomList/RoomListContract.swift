@@ -1,26 +1,26 @@
 import Foundation
 import Core
 
-public protocol RoomListView: AnyObject {
+public protocol RoomListViewContract: AnyObject {
     func show(rooms: [RoomList.Room])
     func show(error message: String)
 }
 
-public protocol RoomListPresentation: AnyObject, ViewLifecycle {
+public protocol RoomListPresenterContract: AnyObject, ViewLifecycle {
     func didSelectRoom(roomId: Int)
     func didTapCreateRoomButton()
 }
 
-public protocol RoomListWireframe: AnyObject {
+public protocol RoomListRouterContract: AnyObject {
     func presentRoomView(roomId: Int)
-    func presentCreateRoomView()
+    func presentRoomCreateView()
 }
 
-public protocol RoomListUseCase: AnyObject {
+public protocol RoomListInteractorContract: AnyObject {
     func subscribeRooms()
 }
 
-public protocol RoomListInteractorOutput: AnyObject {
+public protocol RoomListInteractorOutputContract: AnyObject {
     func output(rooms: [RoomList.Room])
     func output(error: RoomList.Error)
 }

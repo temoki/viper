@@ -1,9 +1,9 @@
-import UIKit
+import UIKit.UIViewController
 
-public struct DummyViewAssembler: ViewAssembler {
+public struct DummySceneResolver: SceneResolver {
     public init() {}
-
-    public func assembleChatView(_ scene: ChatScene) -> UIViewController {
+    
+    public func resolve(_ scene: Scene) -> UIViewController {
         DummyViewController(title: scene.name)
     }
 }

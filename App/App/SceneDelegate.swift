@@ -1,7 +1,7 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    private let viewAssembler = AppViewAssembler()
+    private let sceneResolver = AppSceneResolver()
 
     var window: UIWindow?
 
@@ -10,7 +10,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
-        window?.rootViewController = UINavigationController(rootViewController: viewAssembler.assembleChatView(.roomList))
+        window?.rootViewController = UINavigationController(rootViewController: sceneResolver.resolve(.chatRoomList))
         window?.makeKeyAndVisible()
     }
 

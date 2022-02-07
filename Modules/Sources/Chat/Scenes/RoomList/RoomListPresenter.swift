@@ -1,21 +1,21 @@
 import Foundation
 import Core
 
-public final class RoomListPresenter: RoomListPresentation, DependencyInjectable, RoomListInteractorOutput {
+public final class RoomListPresenter: RoomListPresenterContract, DependencyInjectable, RoomListInteractorOutputContract {
     public init() {}
     
     // MARK: - DependencyInjectable
 
     public struct Dependency {
-        public init(view: RoomListView? = nil, useCase: RoomListUseCase, wireframe: RoomListWireframe) {
+        public init(view: RoomListViewContract? = nil, interactor: RoomListInteractorContract, router: RoomListRouterContract) {
             self.view = view
-            self.useCase = useCase
-            self.wireframe = wireframe
+            self.interactor = interactor
+            self.router = router
         }
         
-        public weak var view: RoomListView?
-        public let useCase: RoomListUseCase
-        public let wireframe: RoomListWireframe
+        public weak var view: RoomListViewContract?
+        public let interactor: RoomListInteractorContract
+        public let router: RoomListRouterContract
     }
     
     public func inject(_ dependency: Dependency) {
@@ -25,15 +25,15 @@ public final class RoomListPresenter: RoomListPresentation, DependencyInjectable
     // MARK: - RoomListPresentation
 
     public func didSelectRoom(roomId: Int) {
-        dependency.wireframe.presentRoomView(roomId: roomId)
+        dependency.router.presentRoomView(roomId: roomId)
     }
     
     public func didTapCreateRoomButton() {
-        dependency.wireframe.presentCreateRoomView()
+        dependency.router.presentRoomCreateView()
     }
     
     public func viewDidLoad() {
-        dependency.useCase.subscribeRooms()
+        dependency.interactor.subscribeRooms()
     }
     
     // MARK: - RoomListInteractorOutput
