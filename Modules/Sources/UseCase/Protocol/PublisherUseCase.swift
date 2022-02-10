@@ -1,39 +1,39 @@
 import Combine
 
 public protocol PublisherUseCase {
-    associatedtype Parameters
-    associatedtype Success
+    associatedtype Input
+    associatedtype Output
     associatedtype Failure: Error
     
-    func invoke(_ parameters: Parameters) -> AnyPublisher<Success, Failure>
+    func invoke(_ input: Input) -> AnyPublisher<Output, Failure>
 }
 
-public final class AnyPublisherUseCase<Parameters, Success, Failure: Error>: PublisherUseCase {
-    private let box: AnyPublisherUseCaseBox<Parameters, Success, Failure>
+public final class AnyPublisherUseCase<Input, Output, Failure: Error>: PublisherUseCase {
+    private let box: AnyPublisherUseCaseBox<Input, Output, Failure>
 
-    public init<T: PublisherUseCase>(_ base: T) where T.Parameters == Parameters, T.Success == Success, T.Failure == Failure {
+    public init<T: PublisherUseCase>(_ base: T) where T.Input == Input, T.Output == Output, T.Failure == Failure {
         self.box = PublisherUseCaseBox<T>(base)
     }
 
-    public func invoke(_ parameters: Parameters) -> AnyPublisher<Success, Failure> {
-        box.invoke(parameters)
+    public func invoke(_ input: Input) -> AnyPublisher<Output, Failure> {
+        box.invoke(input)
     }
 }
 
-private class AnyPublisherUseCaseBox<Parameters, Success, Failure: Error> {
-    func invoke(_ parameters: Parameters) -> AnyPublisher<Success, Failure> {
+private class AnyPublisherUseCaseBox<Input, Output, Failure: Error> {
+    func invoke(_ input: Input) -> AnyPublisher<Output, Failure> {
         fatalError()
     }
 }
 
-private final class PublisherUseCaseBox<T: PublisherUseCase>: AnyPublisherUseCaseBox<T.Parameters, T.Success, T.Failure> {
+private final class PublisherUseCaseBox<T: PublisherUseCase>: AnyPublisherUseCaseBox<T.Input, T.Output, T.Failure> {
     private let base: T
 
     init(_ base: T) {
         self.base = base
     }
 
-    override func invoke(_ parameters: T.Parameters) -> AnyPublisher<T.Success, T.Failure> {
-        base.invoke(parameters)
+    override func invoke(_ input: T.Input) -> AnyPublisher<T.Output, T.Failure> {
+        base.invoke(input)
     }
 }

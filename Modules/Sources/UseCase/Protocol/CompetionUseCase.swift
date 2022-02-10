@@ -1,21 +1,21 @@
 public protocol CompetionUseCase {
-    associatedtype Parameters
-    associatedtype Success
+    associatedtype Input
+    associatedtype Output
     associatedtype Failure: Error
     
-    func invoke(_ parameters: Parameters, completion: ((Result<Success, Failure>) -> Void)?)
+    func invoke(_ input: Input, completion: ((Result<Output, Failure>) -> Void)?)
     func cancel()
 }
 
-public final class AnyCompetionUseCase<Parameters, Success, Failure: Error>: CompetionUseCase {
-    private let box: AnyCompetionUseCaseBox<Parameters, Success, Failure>
+public final class AnyCompetionUseCase<Input, Output, Failure: Error>: CompetionUseCase {
+    private let box: AnyCompetionUseCaseBox<Input, Output, Failure>
 
-    public init<T: CompetionUseCase>(_ base: T) where T.Parameters == Parameters, T.Success == Success, T.Failure == Failure {
+    public init<T: CompetionUseCase>(_ base: T) where T.Input == Input, T.Output == Output, T.Failure == Failure {
         self.box = CompetionUseCaseBox<T>(base)
     }
 
-    public func invoke(_ parameters: Parameters, completion: ((Result<Success, Failure>) -> ())?) {
-        box.invoke(parameters, completion: completion)
+    public func invoke(_ input: Input, completion: ((Result<Output, Failure>) -> ())?) {
+        box.invoke(input, completion: completion)
     }
 
     public func cancel() {
@@ -23,8 +23,8 @@ public final class AnyCompetionUseCase<Parameters, Success, Failure: Error>: Com
     }
 }
 
-private class AnyCompetionUseCaseBox<Parameters, Success, Failure: Error> {
-    func invoke(_ parameters: Parameters, completion: ((Result<Success, Failure>) -> ())?) {
+private class AnyCompetionUseCaseBox<Input, Output, Failure: Error> {
+    func invoke(_ input: Input, completion: ((Result<Output, Failure>) -> ())?) {
         fatalError()
     }
 
@@ -33,15 +33,15 @@ private class AnyCompetionUseCaseBox<Parameters, Success, Failure: Error> {
     }
 }
 
-private final class CompetionUseCaseBox<T: CompetionUseCase>: AnyCompetionUseCaseBox<T.Parameters, T.Success, T.Failure> {
+private final class CompetionUseCaseBox<T: CompetionUseCase>: AnyCompetionUseCaseBox<T.Input, T.Output, T.Failure> {
     private let base: T
 
     init(_ base: T) {
         self.base = base
     }
 
-    override func invoke(_ parameters: T.Parameters, completion: ((Result<T.Success, T.Failure>) -> ())?) {
-        base.invoke(parameters, completion: completion)
+    override func invoke(_ input: T.Input, completion: ((Result<T.Output, T.Failure>) -> ())?) {
+        base.invoke(input, completion: completion)
     }
 
     override func cancel() {

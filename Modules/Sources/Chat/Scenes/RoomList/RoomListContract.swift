@@ -1,9 +1,9 @@
 import Foundation
 import Core
+import UseCase
 
 public protocol RoomListViewContract: AnyObject {
     func show(rooms: [RoomList.Room])
-    func show(error message: String)
 }
 
 public protocol RoomListPresenterContract: AnyObject, ViewLifecycle {
@@ -16,29 +16,16 @@ public protocol RoomListRouterContract: AnyObject {
     func presentRoomCreateView()
 }
 
-public protocol RoomListInteractorContract: AnyObject {
-    func subscribeRooms()
-}
+public struct RoomListUseCases {
+    public let publishRooms: PublishChatRoomsUseCase
 
-public protocol RoomListInteractorOutputContract: AnyObject {
-    func output(rooms: [RoomList.Room])
-    func output(error: RoomList.Error)
+    public init(publishRooms: PublishChatRoomsUseCase) {
+        self.publishRooms = publishRooms
+    }
 }
 
 public enum RoomList {
-    public struct Room: Hashable {
-        public let id: Int
-        public let name: String
-        public let userCount: Int
-        public let unreadCount: Int
-
-        public init(id: Int, name: String, userCount: Int, unreadCount: Int) {
-            self.id = id
-            self.name = name
-            self.userCount = userCount
-            self.unreadCount = unreadCount
-        }
-    }
+    public typealias Room = PublishChatRoomsUseCaseOutput.ChatRoom
     
     public enum Error {
         case nerworkError(Swift.Error)

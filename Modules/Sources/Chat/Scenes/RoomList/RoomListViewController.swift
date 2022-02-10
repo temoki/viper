@@ -23,12 +23,6 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
         self.rooms = rooms
     }
     
-    public func show(error message: String) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(.init(title: "OK", style: .cancel, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
     // MARK: - UICollectionViewDelegate
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -107,7 +101,7 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
                 var content = cell.defaultContentConfiguration()
                 content.text = room.name
                 content.textProperties.font = .boldSystemFont(ofSize: 17)
-                content.secondaryText = "(\(room.userCount) users)"
+                content.secondaryText = "\(room.updatedAt) (\(room.userCount) users)"
                 cell.contentConfiguration = content
                 cell.accessories.removeAll()
                 if room.unreadCount > 0 {
@@ -141,6 +135,7 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
 
 #if DEBUG
 import SwiftUI
+import UseCase
 
 struct RoomListViewController_Wrapper: UIViewControllerRepresentable {
     typealias UIViewControllerType = UINavigationController
@@ -149,11 +144,12 @@ struct RoomListViewController_Wrapper: UIViewControllerRepresentable {
         let viewController = RoomListViewController()
         let presenter = RoomListPresenter()
         let router = RoomListRouter()
-        let interactor = RoomListInteractor()
+        let useCases = RoomListUseCases(
+            publishRooms: AnyPublisherUseCase(PublishChatRoomsUseCaseImpl())
+        )
         
         viewController.inject(.init(presenter: presenter))
-        presenter.inject(.init(view: viewController, interactor: interactor, router: router))
-        interactor.inject(.init(output: presenter))
+        presenter.inject(.init(view: viewController, router: router, useCases: useCases))
         router.inject(.init(sceneResolver: DummySceneResolver(), viewController: viewController))
         return UINavigationController(rootViewController: viewController)
     }

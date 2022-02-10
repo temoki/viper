@@ -1,6 +1,7 @@
-import Core
 import Chat
+import Core
 import UIKit
+import UseCase
 
 public final class AppSceneResolver: SceneResolver {
     
@@ -21,11 +22,12 @@ extension AppSceneResolver {
         let viewController = RoomListViewController()
         let presenter = RoomListPresenter()
         let router = RoomListRouter()
-        let interactor = RoomListInteractor()
+        let useCases = RoomListUseCases(
+            publishRooms: AnyPublisherUseCase(PublishChatRoomsUseCaseImpl())
+        )
         
         viewController.inject(.init(presenter: presenter))
-        presenter.inject(.init(view: viewController, interactor: interactor, router: router))
-        interactor.inject(.init(output: presenter))
+        presenter.inject(.init(view: viewController, router: router, useCases: useCases))
         router.inject(.init(sceneResolver: self, viewController: viewController))
         
         return viewController

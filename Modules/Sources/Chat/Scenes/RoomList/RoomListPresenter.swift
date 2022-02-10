@@ -1,21 +1,31 @@
-import Foundation
+import Combine
 import Core
+import Foundation
+import UseCase
 
-public final class RoomListPresenter: RoomListPresenterContract, DependencyInjectable, RoomListInteractorOutputContract {
+public final class RoomListPresenter: RoomListPresenterContract, DependencyInjectable {
     public init() {}
     
     // MARK: - DependencyInjectable
 
+    public struct UseCases {
+        public let publishChatRoomsUseCase: PublishChatRoomsUseCase
+    }
+
     public struct Dependency {
-        public init(view: RoomListViewContract? = nil, interactor: RoomListInteractorContract, router: RoomListRouterContract) {
+        public init(
+            view: RoomListViewContract?,
+            router: RoomListRouterContract,
+            useCases: RoomListUseCases
+        ) {
             self.view = view
-            self.interactor = interactor
             self.router = router
+            self.useCases = useCases
         }
         
         public weak var view: RoomListViewContract?
-        public let interactor: RoomListInteractorContract
         public let router: RoomListRouterContract
+        public let useCases: RoomListUseCases
     }
     
     public func inject(_ dependency: Dependency) {
@@ -33,24 +43,16 @@ public final class RoomListPresenter: RoomListPresenterContract, DependencyInjec
     }
     
     public func viewDidLoad() {
-        dependency.interactor.subscribeRooms()
-    }
-    
-    // MARK: - RoomListInteractorOutput
-    
-    public func output(rooms: [RoomList.Room]) {
-        DispatchQueue.main.async { [weak self] in
-            self?.dependency.view?.show(rooms: rooms)
-        }
-    }
-    
-    public func output(error: RoomList.Error) {
-        DispatchQueue.main.async { [weak self] in
-            self?.dependency.view?.show(error: error.localizedDescription)
-        }
+        dependency.useCases.publishRooms.invoke(())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] output in
+                self?.dependency.view?.show(rooms: output.rooms)
+            })
+            .store(in: &cancellables)
     }
     
     // MARK: - Private
     
     private var dependency: Dependency!
+    private var cancellables = Set<AnyCancellable>()
 }

@@ -14,7 +14,7 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .target(name: "Chat", dependencies: ["Core"]),
+        .target(name: "Chat", dependencies: ["Core", "UseCase"]),
         .target(name: "UseCase", dependencies: ["Core"]),
         .target(name: "Core", dependencies: []),
         .testTarget(name: "CoreTests", dependencies: ["Core"]),
