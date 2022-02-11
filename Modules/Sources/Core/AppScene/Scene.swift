@@ -4,8 +4,8 @@ public enum Scene {
     case chatRoomCreate
 }
 
-public extension Scene {
-    var name: String {
+extension Scene {
+    public var name: String {
         switch self {
         case .chatRoomList:
             return "ChatRoomList"

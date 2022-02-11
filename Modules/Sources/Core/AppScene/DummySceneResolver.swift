@@ -2,7 +2,7 @@ import UIKit.UIViewController
 
 public struct DummySceneResolver: SceneResolver {
     public init() {}
-    
+
     public func resolve(_ scene: Scene) -> UIViewController {
         DummyViewController(title: scene.name)
     }
