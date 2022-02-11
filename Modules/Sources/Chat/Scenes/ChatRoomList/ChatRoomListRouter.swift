@@ -1,7 +1,7 @@
 import UIKit.UIViewController
 import Core
 
-public final class RoomListRouter: RoomListRouterContract, DependencyInjectable {
+public final class ChatRoomListRouter: ChatRoomListWireframe, DependencyInjectable {
     public init() {}
     
     // MARK: - DependencyInjectable
@@ -20,14 +20,14 @@ public final class RoomListRouter: RoomListRouterContract, DependencyInjectable 
         self.dependency = dependency
     }
     
-    // MARK: - RoomListWireframe
+    // MARK: - ChatRoomListWireframe
     
-    public func presentRoomView(roomId: Int) {
-        let viewController = dependency.sceneResolver.resolve(.chatRoom(roomId: roomId))
+    public func presentChatRoomView(chatRoomId: Int) {
+        let viewController = dependency.sceneResolver.resolve(.chatRoom(roomId: chatRoomId))
         dependency.viewController?.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    public func presentRoomCreateView() {
+    public func presentChatRoomCreateView() {
         let viewController = dependency.sceneResolver.resolve(.chatRoomCreate)
         let navigationController = UINavigationController(rootViewController: viewController)
         dependency.viewController?.present(navigationController, animated: true, completion: nil)

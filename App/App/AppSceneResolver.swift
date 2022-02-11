@@ -19,11 +19,11 @@ public final class AppSceneResolver: SceneResolver {
 
 extension AppSceneResolver {
     func assembleChatRoomListScene() -> UIViewController {
-        let viewController = RoomListViewController()
-        let presenter = RoomListPresenter()
-        let router = RoomListRouter()
-        let useCases = RoomListUseCases(
-            publishRooms: AnyPublisherUseCase(PublishChatRoomsUseCaseImpl())
+        let viewController = ChatRoomListViewController()
+        let presenter = ChatRoomListPresenter()
+        let router = ChatRoomListRouter()
+        let useCases = ChatRoomListUseCases(
+            publishChatRooms: AnyPublisherUseCase(PublishChatRoomsInteractorStub())
         )
         
         viewController.inject(.init(presenter: presenter))

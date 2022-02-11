@@ -3,7 +3,7 @@ import Core
 import Foundation
 import UseCase
 
-public final class RoomListPresenter: RoomListPresenterContract, DependencyInjectable {
+public final class ChatRoomListPresenter: ChatRoomListPresentation, DependencyInjectable {
     public init() {}
     
     // MARK: - DependencyInjectable
@@ -14,39 +14,39 @@ public final class RoomListPresenter: RoomListPresenterContract, DependencyInjec
 
     public struct Dependency {
         public init(
-            view: RoomListViewContract?,
-            router: RoomListRouterContract,
-            useCases: RoomListUseCases
+            view: ChatRoomListView?,
+            router: ChatRoomListWireframe,
+            useCases: ChatRoomListUseCases
         ) {
             self.view = view
             self.router = router
             self.useCases = useCases
         }
         
-        public weak var view: RoomListViewContract?
-        public let router: RoomListRouterContract
-        public let useCases: RoomListUseCases
+        public weak var view: ChatRoomListView?
+        public let router: ChatRoomListWireframe
+        public let useCases: ChatRoomListUseCases
     }
     
     public func inject(_ dependency: Dependency) {
         self.dependency = dependency
     }
     
-    // MARK: - RoomListPresentation
+    // MARK: - ChatRoomListPresentation
 
-    public func didSelectRoom(roomId: Int) {
-        dependency.router.presentRoomView(roomId: roomId)
+    public func didSelectChatRoom(chatRoomId: Int) {
+        dependency.router.presentChatRoomView(chatRoomId: chatRoomId)
     }
     
-    public func didTapCreateRoomButton() {
-        dependency.router.presentRoomCreateView()
+    public func didTapCreateChatRoomButton() {
+        dependency.router.presentChatRoomCreateView()
     }
     
     public func viewDidLoad() {
-        dependency.useCases.publishRooms.invoke(())
+        dependency.useCases.publishChatRooms.invoke(())
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] output in
-                self?.dependency.view?.show(rooms: output.rooms)
+                self?.dependency.view?.show(chatRooms: output.rooms)
             })
             .store(in: &cancellables)
     }

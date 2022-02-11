@@ -1,33 +1,33 @@
 import UIKit
 import Core
 
-public final class RoomListViewController: UIViewController, RoomListViewContract, DependencyInjectable, UICollectionViewDelegate {
+public final class ChatRoomListViewController: UIViewController, ChatRoomListView, DependencyInjectable, UICollectionViewDelegate {
     
     // MARK: - DependencyInjectable
 
     public struct Dependency {
-        public init(presenter: RoomListPresenterContract) {
+        public init(presenter: ChatRoomListPresentation) {
             self.presenter = presenter
         }
         
-        public let presenter: RoomListPresenterContract
+        public let presenter: ChatRoomListPresentation
     }
     
     public func inject(_ dependency: Dependency) {
         self.dependency = dependency
     }
     
-    // MARK: - RoomListView
+    // MARK: - ChatRoomListView
     
-    public func show(rooms: [RoomList.Room]) {
-        self.rooms = rooms
+    public func show(chatRooms: [ChatRoomList.ChatRoom]) {
+        self.chatRooms = chatRooms
     }
     
     // MARK: - UICollectionViewDelegate
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        dependency.presenter.didSelectRoom(roomId: rooms[indexPath.item].id)
+        dependency.presenter.didSelectChatRoom(chatRoomId: chatRooms[indexPath.item].id)
     }
     
     // MARK: - Override
@@ -38,20 +38,20 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
         navigationItem.rightBarButtonItem = .init(
             systemItem: .add,
             primaryAction: .init(handler: { [weak self] _ in
-                self?.dependency.presenter.didTapCreateRoomButton()
+                self?.dependency.presenter.didTapCreateChatRoomButton()
             }),
             menu: nil)
 
-        roomList.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(roomList.view)
+        chatRoomList.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(chatRoomList.view)
         NSLayoutConstraint.activate([
-            roomList.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            roomList.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            roomList.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            roomList.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            chatRoomList.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            chatRoomList.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            chatRoomList.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            chatRoomList.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
 
-        updateRoomListView()
+        updateChatRoomListView()
         dependency.presenter.viewDidLoad()
     }
     
@@ -83,13 +83,13 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
 
     private var dependency: Dependency!
     
-    private var rooms: [RoomList.Room] = [] {
-        didSet { updateRoomListView() }
+    private var chatRooms: [ChatRoomList.ChatRoom] = [] {
+        didSet { updateChatRoomListView() }
     }
     
-    private lazy var roomList: (
+    private lazy var chatRoomList: (
         view: UICollectionView,
-        dataSource: UICollectionViewDiffableDataSource<Section, RoomList.Room>
+        dataSource: UICollectionViewDiffableDataSource<Section, ChatRoomList.ChatRoom>
     ) = {
         let config = UICollectionLayoutListConfiguration(appearance: .plain)
         let layout = UICollectionViewCompositionalLayout.list(using: config)
@@ -97,7 +97,7 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
         view.delegate = self
         
         let cellRegistration = UICollectionView
-            .CellRegistration<UICollectionViewListCell, RoomList.Room> { cell, indexPath, room in
+            .CellRegistration<UICollectionViewListCell, ChatRoomList.ChatRoom> { cell, indexPath, room in
                 var content = cell.defaultContentConfiguration()
                 content.text = room.name
                 content.textProperties.font = .boldSystemFont(ofSize: 17)
@@ -110,7 +110,7 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
                 cell.accessories.append(.disclosureIndicator())
             }
         
-        let dataSource = UICollectionViewDiffableDataSource<Section, RoomList.Room>(
+        let dataSource = UICollectionViewDiffableDataSource<Section, ChatRoomList.ChatRoom>(
             collectionView: view,
             cellProvider: { collectionView, indexPath, item -> UICollectionViewCell? in
                 collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
@@ -123,11 +123,11 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
         case main
     }
     
-    private func updateRoomListView() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, RoomList.Room>()
+    private func updateChatRoomListView() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatRoomList.ChatRoom>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(rooms, toSection: .main)
-        roomList.dataSource.apply(snapshot, animatingDifferences: true)
+        snapshot.appendItems(chatRooms, toSection: .main)
+        chatRoomList.dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
@@ -137,15 +137,15 @@ public final class RoomListViewController: UIViewController, RoomListViewContrac
 import SwiftUI
 import UseCase
 
-struct RoomListViewController_Wrapper: UIViewControllerRepresentable {
+struct ChatRoomListViewController_Wrapper: UIViewControllerRepresentable {
     typealias UIViewControllerType = UINavigationController
     
     func makeUIViewController(context: Context) -> UINavigationController {
-        let viewController = RoomListViewController()
-        let presenter = RoomListPresenter()
-        let router = RoomListRouter()
-        let useCases = RoomListUseCases(
-            publishRooms: AnyPublisherUseCase(PublishChatRoomsUseCaseImpl())
+        let viewController = ChatRoomListViewController()
+        let presenter = ChatRoomListPresenter()
+        let router = ChatRoomListRouter()
+        let useCases = ChatRoomListUseCases(
+            publishChatRooms: AnyPublisherUseCase(PublishChatRoomsInteractorStub())
         )
         
         viewController.inject(.init(presenter: presenter))
@@ -160,7 +160,7 @@ struct RoomListViewController_Wrapper: UIViewControllerRepresentable {
 
 struct RoomListViewController_Previews: PreviewProvider {
     static var previews: some View {
-        RoomListViewController_Wrapper()
+        ChatRoomListViewController_Wrapper()
             .previewLayout(.device)
     }
 }
