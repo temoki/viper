@@ -7,6 +7,13 @@ final class JSONDataParser<T: Decodable>: APIKit.DataParser {
     }
 
     func parse(data: Data) throws -> Any {
-        try JSONDecoder().decode(T.self, from: data)
+        try decoder.decode(T.self, from: data)
     }
+
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 }

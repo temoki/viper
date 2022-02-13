@@ -6,6 +6,12 @@ import UIKit
 public final class AppSceneResolver: SceneResolver {
     public init() {}
 
+    public func resolveRoot() -> UIViewController {
+        resolve(.chatRoomList)
+    }
+
+    // MARK: - SceneResolver
+
     public func resolve(_ scene: Scene) -> UIViewController {
         switch scene {
         case .chatRoomList:
@@ -24,7 +30,7 @@ extension AppSceneResolver {
         let presenter = ChatRoomListPresenter()
         let router = ChatRoomListRouter()
         let useCases = ChatRoomListUseCases(
-            publishChatRooms: AnyPublisherUseCase(PublishChatRoomsInteractor())
+            subscribeChatRooms: AnyPublisherUseCase(SubscribeChatRoomsInteractor())
         )
 
         viewController.inject(.init(presenter: presenter))

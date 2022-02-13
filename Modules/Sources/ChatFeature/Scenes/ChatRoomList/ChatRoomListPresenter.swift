@@ -9,7 +9,7 @@ public final class ChatRoomListPresenter: ChatRoomListPresentation, DependencyIn
     // MARK: - DependencyInjectable
 
     public struct UseCases {
-        public let publishChatRoomsUseCase: PublishChatRoomsUseCase
+        public let publishChatRoomsUseCase: SubscribeChatRoomsUseCase
     }
 
     public struct Dependency {
@@ -43,7 +43,7 @@ public final class ChatRoomListPresenter: ChatRoomListPresentation, DependencyIn
     }
 
     public func viewDidLoad() {
-        dependency.useCases.publishChatRooms.invoke(())
+        dependency.useCases.subscribeChatRooms.invoke(())
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] output in
                 self?.dependency.view?.show(chatRooms: output.chatRooms)

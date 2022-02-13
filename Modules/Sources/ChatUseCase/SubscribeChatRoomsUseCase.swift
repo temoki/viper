@@ -2,11 +2,11 @@ import Combine
 import Core
 import Foundation
 
-public typealias PublishChatRoomsUseCase = AnyPublisherUseCase<
-    Void, PublishChatRoomsUseCaseOutput, Never
+public typealias SubscribeChatRoomsUseCase = AnyPublisherUseCase<
+    Void, SubscribeChatRoomsUseCaseOutput, Never
 >
 
-public struct PublishChatRoomsUseCaseOutput {
+public struct SubscribeChatRoomsUseCaseOutput: Equatable {
     public struct ChatRoom: Hashable {
         public let id: Int
         public let name: String
@@ -36,9 +36,9 @@ public struct PublishChatRoomsUseCaseOutput {
     }
 }
 
-public final class PublishChatRoomsInteractorStub: PublisherUseCase {
+public final class SubscribeChatRoomsInteractorStub: PublisherUseCase {
     public typealias Input = Void
-    public typealias Output = PublishChatRoomsUseCaseOutput
+    public typealias Output = SubscribeChatRoomsUseCaseOutput
     public typealias Failure = Never
 
     public init() {}

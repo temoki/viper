@@ -17,15 +17,15 @@ public protocol ChatRoomListWireframe: AnyObject {
 }
 
 public struct ChatRoomListUseCases {
-    public let publishChatRooms: PublishChatRoomsUseCase
+    public let subscribeChatRooms: SubscribeChatRoomsUseCase
 
-    public init(publishChatRooms: PublishChatRoomsUseCase) {
-        self.publishChatRooms = publishChatRooms
+    public init(subscribeChatRooms: SubscribeChatRoomsUseCase) {
+        self.subscribeChatRooms = subscribeChatRooms
     }
 }
 
 public enum ChatRoomList {
-    public typealias ChatRoom = PublishChatRoomsUseCaseOutput.ChatRoom
+    public typealias ChatRoom = SubscribeChatRoomsUseCaseOutput.ChatRoom
 
     public enum Error {
         case unknown(Swift.Error)

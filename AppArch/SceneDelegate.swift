@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.backgroundColor = .systemBackground
         window?.rootViewController = UINavigationController(
-            rootViewController: sceneResolver.resolve(.chatRoomList))
+            rootViewController: sceneResolver.resolveRoot())
         window?.makeKeyAndVisible()
     }
 

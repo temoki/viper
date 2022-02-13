@@ -13,8 +13,8 @@ class QueryUsersInteractorSpec: QuickSpec {
                     let responseBody = """
                         {
                             "users": [
-                                { "id" : 123, "name" : "User One" },
-                                { "id" : 456, "name" : "User Two" }
+                                { "id": 1, "name": "User One" },
+                                { "id": 2, "name": "User Two" }
                             ]
                         }
                         """.data(using: .utf8)!
@@ -26,16 +26,16 @@ class QueryUsersInteractorSpec: QuickSpec {
                 HTTPStubs.removeAllStubs()
             }
 
-            context("when success") {
-                it("get users") {
+            context("APIリクエストが成功") {
+                it("ユーザー情報リストが取得できる") {
                     waitUntil { done in
                         QueryUsersInteractor().invoke(()) { result in
                             switch result {
                             case .success(let output):
                                 expect(
                                     QueryUsersInteractor.Output(users: [
-                                        .init(id: 123, name: "User One"),
-                                        .init(id: 456, name: "User Two"),
+                                        .init(id: 1, name: "User One"),
+                                        .init(id: 2, name: "User Two"),
                                     ])
                                 ).to(equal(output))
                             case .failure(let error):

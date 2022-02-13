@@ -155,7 +155,7 @@ public final class ChatRoomListViewController: UIViewController, ChatRoomListVie
             let presenter = ChatRoomListPresenter()
             let router = ChatRoomListRouter()
             let useCases = ChatRoomListUseCases(
-                publishChatRooms: AnyPublisherUseCase(PublishChatRoomsInteractorStub())
+                subscribeChatRooms: AnyPublisherUseCase(SubscribeChatRoomsInteractorStub())
             )
 
             viewController.inject(.init(presenter: presenter))

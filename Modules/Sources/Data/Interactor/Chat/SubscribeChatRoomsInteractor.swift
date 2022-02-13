@@ -4,9 +4,9 @@ import Combine
 import Core
 import Foundation
 
-public final class PublishChatRoomsInteractor: PublisherUseCase {
+public final class SubscribeChatRoomsInteractor: PublisherUseCase {
     public typealias Input = Void
-    public typealias Output = PublishChatRoomsUseCaseOutput
+    public typealias Output = SubscribeChatRoomsUseCaseOutput
     public typealias Failure = Never
 
     public init(session: Session = .shared, polingInterval: TimeInterval = 5, repeatCount: Int = 12)
@@ -27,17 +27,15 @@ public final class PublishChatRoomsInteractor: PublisherUseCase {
             return Self.queryChatRoomsTask(with: session)
         }
 
-        return
-            firstQuery
-            .append(
-                Timer
-                    .publish(every: polingInterval, on: .main, in: .common)
-                    .prefix(repeatCount - 1)
-                    .flatMap { _ in
-                        Self.queryChatRoomsTask(with: session)
-                    }
-            )
-            .eraseToAnyPublisher()
+        return firstQuery.append(
+            Timer
+                .publish(every: polingInterval, on: .main, in: .common)
+                .autoconnect()
+                .prefix(repeatCount - 1)
+                .flatMap { _ in
+                    Self.queryChatRoomsTask(with: session)
+                }
+        ).eraseToAnyPublisher()
     }
 
     private let session: Session
