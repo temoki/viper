@@ -1,4 +1,5 @@
 import ChatFeature
+import ChatUseCase
 import Core
 import Data
 import UIKit
@@ -30,7 +31,7 @@ extension AppSceneResolver {
         let presenter = ChatRoomListPresenter()
         let router = ChatRoomListRouter()
         let useCases = ChatRoomListUseCases(
-            subscribeChatRooms: AnyPublisherUseCase(SubscribeChatRoomsInteractor())
+            subscribeChatRooms: AnyPublisherUseCase(SubscribeChatRoomsInteractorStub())
         )
 
         viewController.inject(.init(presenter: presenter))

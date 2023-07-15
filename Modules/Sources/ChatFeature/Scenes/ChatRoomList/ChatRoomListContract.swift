@@ -2,15 +2,18 @@ import ChatUseCase
 import Core
 import Foundation
 
+@MainActor
 public protocol ChatRoomListView: AnyObject {
     func show(chatRooms: [ChatRoomList.ChatRoom])
 }
 
+@MainActor
 public protocol ChatRoomListPresentation: AnyObject, ViewLifecycle {
     func didSelectChatRoom(chatRoomId: Int)
     func didTapCreateChatRoomButton()
 }
 
+@MainActor
 public protocol ChatRoomListWireframe: AnyObject {
     func presentChatRoomView(chatRoomId: Int)
     func presentChatRoomCreateView()
