@@ -7,7 +7,7 @@ public typealias SubscribeChatRoomsUseCase = AnyPublisherUseCase<
 >
 
 public struct SubscribeChatRoomsUseCaseOutput: Equatable {
-    public struct ChatRoom: Hashable {
+    public struct ChatRoom: Hashable, Identifiable {
         public let id: Int
         public let name: String
         public let userCount: Int
