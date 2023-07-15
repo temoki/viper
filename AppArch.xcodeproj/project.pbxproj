@@ -160,7 +160,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Run apple/swift-format\necho \"warning: FIXME(Homebrewのパスを通さないとmintが実行できない)\"\nPATH=$PATH:/opt/homebrew/bin\nif which mint >/dev/null; then\n  xcrun --sdk macosx mint run apple/swift-format format -r ${SRCROOT} -i || true\n  xcrun --sdk macosx mint run apple/swift-format lint -r ${SRCROOT} || true\nelse\n  echo \"warning: mint not installed. (https://github.com/yonaskolb/Mint)\"\nfi\n";
+			shellScript = "# Run apple/swift-format\necho \"warning: FIXME(Homebrewのパスを通さないとmintが実行できない)\"\nPATH=$PATH:/opt/homebrew/bin\nif which swift-format >/dev/null; then\n  swift-format format -r ${SRCROOT} -i || true\n  swift-format lint -r ${SRCROOT} || true\nelse\n  echo \"warning: swift-format not installed. (https://github.com/apple/swift-format)\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
