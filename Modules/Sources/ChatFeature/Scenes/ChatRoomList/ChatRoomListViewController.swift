@@ -1,8 +1,9 @@
 import Core
+import SwiftUI
 import UIKit
 
 public final class ChatRoomListViewController: UIViewController, ChatRoomListView,
-    DependencyInjectable, UICollectionViewDelegate
+    DependencyInjectable
 {
 
     // MARK: - DependencyInjectable
@@ -22,16 +23,7 @@ public final class ChatRoomListViewController: UIViewController, ChatRoomListVie
     // MARK: - ChatRoomListView
 
     public func show(chatRooms: [ChatRoomList.ChatRoom]) {
-        self.chatRooms = chatRooms
-    }
-
-    // MARK: - UICollectionViewDelegate
-
-    public func collectionView(
-        _ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath
-    ) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        dependency.presenter.didSelectChatRoom(chatRoomId: chatRooms[indexPath.item].id)
+        self.state.chatRooms = chatRooms
     }
 
     // MARK: - Override
@@ -46,19 +38,19 @@ public final class ChatRoomListViewController: UIViewController, ChatRoomListVie
             }),
             menu: nil)
 
-        chatRoomList.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(chatRoomList.view)
+        hostringController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hostringController.view)
         NSLayoutConstraint.activate([
-            chatRoomList.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            chatRoomList.view.leadingAnchor.constraint(
+            hostringController.view.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor),
+            hostringController.view.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            chatRoomList.view.trailingAnchor.constraint(
+            hostringController.view.trailingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            chatRoomList.view.bottomAnchor.constraint(
+            hostringController.view.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
 
-        updateChatRoomListView()
         dependency.presenter.viewDidLoad()
     }
 
@@ -90,55 +82,11 @@ public final class ChatRoomListViewController: UIViewController, ChatRoomListVie
 
     private var dependency: Dependency!
 
-    private var chatRooms: [ChatRoomList.ChatRoom] = [] {
-        didSet { updateChatRoomListView() }
-    }
+    private let state = ChatRoomListViewSwiftUIState()
 
-    private lazy var chatRoomList:
-        (
-            view: UICollectionView,
-            dataSource: UICollectionViewDiffableDataSource<Section, ChatRoomList.ChatRoom>
-        ) = {
-            let config = UICollectionLayoutListConfiguration(appearance: .plain)
-            let layout = UICollectionViewCompositionalLayout.list(using: config)
-            let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-            view.delegate = self
-
-            let cellRegistration = UICollectionView
-                .CellRegistration<UICollectionViewListCell, ChatRoomList.ChatRoom> {
-                    cell, indexPath, room in
-                    var content = cell.defaultContentConfiguration()
-                    content.text = room.name
-                    content.textProperties.font = .boldSystemFont(ofSize: 17)
-                    content.secondaryText = "\(room.updatedAt) (\(room.userCount) users)"
-                    cell.contentConfiguration = content
-                    cell.accessories.removeAll()
-                    if room.unreadCount > 0 {
-                        cell.accessories.append(.label(text: "\((room.unreadCount))"))
-                    }
-                    cell.accessories.append(.disclosureIndicator())
-                }
-
-            let dataSource = UICollectionViewDiffableDataSource<Section, ChatRoomList.ChatRoom>(
-                collectionView: view,
-                cellProvider: { collectionView, indexPath, item -> UICollectionViewCell? in
-                    collectionView.dequeueConfiguredReusableCell(
-                        using: cellRegistration, for: indexPath, item: item)
-                })
-
-            return (view, dataSource)
-        }()
-
-    private enum Section {
-        case main
-    }
-
-    private func updateChatRoomListView() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ChatRoomList.ChatRoom>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(chatRooms, toSection: .main)
-        chatRoomList.dataSource.apply(snapshot, animatingDifferences: true)
-    }
+    private lazy var hostringController = UIHostingController(
+        rootView: ChatRoomListViewSwiftUIView(state: state, presentation: dependency.presenter)
+    )
 }
 
 // MARK: - Preview
